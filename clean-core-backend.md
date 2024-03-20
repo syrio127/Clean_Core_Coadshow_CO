@@ -175,3 +175,148 @@ module.exports = async (srv) => {
 ```
 
 ## Execute cds watch --profile sandbox
+
+
+##  Add Tools External System --> Next to API Business Partner in package.json
+
+```json
+"toolsManager": {
+	"kind": "rest",
+	"credentials": {
+		"url": "http://localhost:8080",
+		"requestTimeout": 3000
+	},
+
+"[sandbox]": {
+	"credentials": {
+		"url": "https://p2c-poc-rest-srv-ts-production.up.railway.app/"
+	}
+},
+
+"[production]": {
+	"credentials": {
+		"destination": "P2C-ToolManager"
+	}
+  }
+}
+```
+
+## Add External Function definitions in external-test.cds
+
+```cds
+ //* Non SAP Source Access Functions    
+
+     function getTools() returns {
+        totalTools: Integer;
+        activeTools: Integer;
+        msg: String;
+
+        toolsList: array of {
+            _id: String;
+            toolName: String;
+            toolDescription: String;
+            toolStatus: Boolean;
+            toolDailyPrice: Integer;
+            toolCurrency: String;
+            //__v: Integer;
+            toolAvailable: Boolean;
+            toolCategory: String
+        }
+    };
+
+    function getToolById(id: String) returns {
+        msg: String;
+        tool: {
+            _id: String;
+            toolName: String;
+            toolDescription: String;
+            toolStatus: Boolean;
+            toolDailyPrice: Integer;
+            toolCurrency: String;
+            //__v: Integer;
+            toolAvailable: Boolean;
+            toolCategory: String
+        }
+    };
+
+    function getToolsByDescription(description: String) returns {
+        msg: String;
+        availableToolsList: array of {
+            _id: String;
+            toolName: String;
+            toolDescription: String;
+            toolStatus: Boolean;
+            toolDailyPrice: Integer;
+            toolCurrency: String;
+            //__v: Integer;
+            toolAvailable: Boolean;
+            toolCategory: String
+        }
+
+    };
+
+   function changeToolStatus(id: String) returns {
+        msg: String;
+   };
+```
+
+## Add Function Implementation to external-test.js
+
+```js
+ /**
+ //* REST API Function Calls for Tools
+ */
+
+     //**Function Read Tools -- NO oData
+
+    srv.on('getTools',async (req) => {
+        
+        const toolsAPI = await cds.connect.to("toolsManager")
+        return await toolsAPI.send({query: 'GET /api/tools', headers:{
+            userName: "p2c-comm-user",
+            APIKey: "K306GLEZ1TPZZU4CIVGTQFQHXZ2920"
+        }})                
+    })
+
+    //* Function Read Tool By ID -- No oData
+    //* URL de Consulta: http://localhost:4004/demosrv/getToolById(id='64da6b6e55b27b4c05d262c1')
+
+    srv.on('getToolById',async (req) => {
+    
+        const { id } = req.data
+        const toolsAPI = await cds.connect.to("toolsManager")
+        return await toolsAPI.send({query:`GET /api/tools/${id}`, headers:{
+            userName: "p2c-comm-user",
+            APIKey: "K306GLEZ1TPZZU4CIVGTQFQHXZ2920"
+         }})
+    })
+
+    //* Function to get a list of available tools according description
+    //* URL de Consulta: http://localhost:4004/demosrv/getToolsByDescription(description='High performance Drill')
+
+    srv.on('getToolsByDescription', async (req) => {
+        
+        const { description } = req.data 
+        const toolsAPI = await cds.connect.to("toolsManager")
+        return await toolsAPI.send({query:`GET /api/tools/${description}/1`, headers: {
+            userName: "p2c-comm-user",
+            APIKey: "K306GLEZ1TPZZU4CIVGTQFQHXZ2920"
+        }})
+    })
+
+
+    //* Function to change boolean status of a tool (available), to be called on
+    //* contract item creation
+    
+    srv.on('changeToolStatus', async (req) => {
+        
+        const { id } = req.data
+        const toolsAPI = await cds.connect.to("toolsManager")
+        return await toolsAPI.send({query:`PATCH /api/tools/${id}`, headers: {
+            userName: "p2c-comm-user",
+            APIKey: "K306GLEZ1TPZZU4CIVGTQFQHXZ2920"
+        }})
+    })
+```
+
+
