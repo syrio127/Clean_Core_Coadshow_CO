@@ -367,3 +367,69 @@ await toolsAPI.send({
 
 ```
 
+# STOP the running cds watch
+
+## Adjust Contracts Mockup File - Replace content
+
+```csv
+ID,description,beginDate,endDate,totalMonthValue,totalMonthCurrency,businessPartner_BusinessPartner
+CN-100,CCL Mining CO - Perforation 2023,2023-03-01,2023-10-25,0,USD,203
+CN-105,Pacific Transportation INC. South Africa Mining,2022-02-02,2028-04-02,0,USD,1018
+CN-106,Atlantic Transportation INC. - Cooper Mine-Port Movement,2023-02-02,2026-05-18,0,USD,1710
+CN-108,Pure Gold Company - Explosives and Perforation, 2023-02-02,2025-12-02,0,USD,1710
+CN-109,Rusell & CO Diamond Mining - Australian Full Operation Contract,2023-03-03,2030-10-18,0,USD,1018
+```
+
+## Uncomment in schema.cds in Contracts Entity, the Business Partner commented line
+
+## Add Runtime Value Calculation to the external-test.js for Price Calculation and BP Name Completion
+```js
+/**
+//*Implement Contract Value Calculation
+//*Implement Business Partner Call - SAP S4HANA API
+*/
+
+//*Total Contract Value Calculation
+srv.after('READ','Contracts',async (contracts, req) => {
+	const db = srv.transaction(req);
+	for(let each of contracts){
+
+		//*Total Contract Value Calculation
+		const items = await      
+		db.run(SELECT.from('ContractItems').where({contract_ID:each.ID}))
+		
+		for (let i = 0; i < items.length; i++) {
+			const element = items[i];
+			each.totalMonthValue += element.price
+		}
+	}
+})
+
+//*BP Name Completion
+
+srv.after('READ','Contracts',async (contracts, req) => {
+
+	const db = srv.transaction(req);
+	for(const cont of contracts){
+	
+		//* BP Name Completion
+		const query = SELECT(A_BusinessPartner)
+		.where({BusinessPartner: cont.businessPartner_BusinessPartner})
+		.columns('BusinessPartnerFullName')
+		
+		const bpName = await bupa.transaction().send({
+			query: query,
+			headers: {
+			apikey: "lSnMaBSXTGh7YX1aLfAyN08AdDkVRsfz"
+			}
+		})
+	
+		if(bpName){
+			cont.bpName = bpName[0].BusinessPartnerFullName;
+		} else {
+			cont.bpName = 'BP Name Not Found'
+		}
+	}
+})
+
+``
