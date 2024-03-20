@@ -129,3 +129,49 @@ entity BusinessPartners as projection on bpar.A_BusinessPartner {
 npm install @sap-cloud-sdk/http-client @sap-cloud-sdk/util
 ```
 
+# Close cds watch running!!!
+
+
+## Add the S4HANA sandbox environment to package.json
+```json
+	"API_BUSINESS_PARTNER": {
+	"kind": "odata-v2",
+	"model": "srv/external/API_BUSINESS_PARTNER",
+	"[sandbox]": {
+		"credentials": {
+			"url":		 "https://sandbox.api.sap.com/s4hanacloud/sap/opu/odata/sap/API_BUSINESS_PARTNER"
+	}
+}
+```
+
+##  Create the external-test.js file as an implementation for external-test.cds
+
+```js
+const cds = require('@sap/cds')
+
+module.exports = async (srv) => {
+
+	//* Local Service Entities
+	const {Contracts, BusinessPartners, ContractItems } = srv.entities;
+	
+	//* Tools API connection
+	// const toolsAPI = await cds.connect.to("toolsManager")
+	
+	//*Business Partner Connect
+	const bupa = await cds.connect.to('API_BUSINESS_PARTNER')
+	const {A_BusinessPartner} = bupa.entities;
+
+	//* Entity BusinessPartners READ -- oData
+	srv.on('READ', 'BusinessPartners', async (req) => {
+		return await bupa.transaction(req).send({
+			query: req.query,
+			headers: {
+				apikey: "lSnMaBSXTGh7YX1aLfAyN08AdDkVRsfz"
+			}
+		})
+	})
+}
+
+```
+
+## Execute cds watch --profile sandbox
