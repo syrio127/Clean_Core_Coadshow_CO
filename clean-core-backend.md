@@ -99,7 +99,7 @@ service DemoService @(path: '/demosrv'){
 ```
 
 
-## srv/external/API_BUSINESS_PARTNER-A_BusinessPartner.csv
+## srv/external/data/API_BUSINESS_PARTNER-A_BusinessPartner.csv
 
 ```csv
 BusinessPartner;BusinessPartnerFullName;BusinessPartnerIsBlocked
