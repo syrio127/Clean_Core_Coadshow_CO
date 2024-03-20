@@ -97,3 +97,28 @@ service DemoService @(path: '/demosrv'){
     entity ContractItems as projection on my.ContractItems;
 }
 ```
+
+
+## srv/external/API_BUSINESS_PARTNER-A_BusinessPartner.csv
+
+```csv
+BusinessPartner;BusinessPartnerFullName;BusinessPartnerIsBlocked
+1000038;Williams Electric Drives;false
+1000040;Smith Batteries Ltd;false
+1000042;Johnson Automotive Supplies;true
+
+```
+
+## Add the business partner entity to schema.cds
+
+```js
+using { API_BUSINESS_PARTNER as bpar } from '../srv/external/API_BUSINESS_PARTNER.csn';
+
+entity BusinessPartners as projection on bpar.A_BusinessPartner {
+    key BusinessPartner,
+    BusinessPartnerFullName,
+    BusinessPartnerIsBlocked 
+}
+```
+
+# Uncomment line on external-test.cds!!!
