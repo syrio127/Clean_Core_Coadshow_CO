@@ -122,3 +122,10 @@ entity BusinessPartners as projection on bpar.A_BusinessPartner {
 ```
 
 # Uncomment line on external-test.cds!!!
+
+
+## Execute in the root folder of the project
+```shell
+npm install @sap-cloud-sdk/http-client @sap-cloud-sdk/util
+```
+
