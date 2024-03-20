@@ -26,3 +26,32 @@ entity Contracts : managed {
 	toolName: String
 }
 ```
+
+
+## admin-service.cds
+```js
+using { p2c.cap.contracts as my } from '../db/schema';
+
+service AdminService @(path: '/admin'){
+	entity Contracts as projection on my.Contracts;
+	entity ContractItems as projection on my.ContractItems;
+}
+```
+
+## contracts-service.cds
+
+```js
+using { p2c.cap.contracts as my} from '../db/schema';
+
+service  ContractsService @(path:'/contracts'){
+
+    entity Contracts as select from my.Contracts {
+        ID, description
+    };
+
+    @readonly entity ContractItems as projection on my.ContractItems;
+
+
+}
+```
+
