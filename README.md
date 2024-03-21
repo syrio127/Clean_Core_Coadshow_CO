@@ -18,6 +18,9 @@ https://lac-p2c-dev-trn-9tmfudfx.us10.build.cloud.sap/lobby
 Agent
 https://lac-p2c-dev-trn-9tmfudfx.us10.process-automation.build.cloud.sap
 
+EndPoint
+https://btp-psa-landscape-lac-p2c-dev-trn-p2c-dev-cap-clean-cor3e3e1b38.cfapps.us10.hana.ondemand.com
+
 Badge y Asistencia
 https://sap-my.sharepoint.com/:x:/p/miguel_angel_bermudez/EdAheTKi7jhMlxbBH4-axqIB8MWIe2-LtoX9dGmQfuNKRA?e=aYe5ti
 Pass: Welcome1.CO
