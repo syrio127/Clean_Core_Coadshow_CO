@@ -20,5 +20,6 @@ https://lac-p2c-dev-trn-9tmfudfx.us10.process-automation.build.cloud.sap
 
 Badge y Asistencia
 https://sap-my.sharepoint.com/:x:/p/miguel_angel_bermudez/EdAheTKi7jhMlxbBH4-axqIB8MWIe2-LtoX9dGmQfuNKRA?e=aYe5ti
+Pass: Welcome1.CO
 
 
